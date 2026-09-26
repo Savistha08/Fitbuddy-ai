@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ title }}</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: #14151b;
+    color: #f0f0f0;
+    padding: 24px;
+  }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  form.logout { display: inline; }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  button.logout {
+    background: #3a3f4b;
+    color: #f5f5f5;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  button.logout:hover { background: #4c505c; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1c1e26;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.85rem;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #2b2e38;
+  }
+  th {
+    background: #23252f;
+    color: #ff8459;
+    position: sticky;
+    top: 0;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 320px;
+    max-height: 220px;
+    overflow-y: auto;
+    font-size: 0.75rem;
+    color: #cfd3dc;
+    margin: 0;
+  }
+  .empty { color: #9aa0ab; padding: 20px 0; }
+  .table-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>📊 {{ title }}</h1>
+    <form class="logout" method="post" action="/admin/logout">
+      <button class="logout" type="submit">Log out</button>
+    </form>
+  </div>
+
+  {% if users %}
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Weight (kg)</th>
+        <th>Goal</th>
+        <th>Intensity</th>
+        <th>Original Plan</th>
+        <th>Updated Plan</th>
+        <th>Latest Feedback</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.user_id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.age }}</td>
+        <td>{{ user.weight_kg }}</td>
+        <td>{{ user.goal }}</td>
+        <td>{{ user.intensity }}</td>
+        <td><pre>{{ user.original_plan or "N/A" }}</pre></td>
+        <td><pre>{{ user.updated_plan or "Not updated" }}</pre></td>
+        <td><pre>{{ user.latest_feedback or "-" }}</pre></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+    <p class="empty">No users yet.</p>
+  {% endif %}
+</body>
+</html>

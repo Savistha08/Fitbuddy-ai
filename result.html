@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ title }} - Your Plan</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: #14151b;
+    color: #f0f0f0;
+    padding: 24px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; }
+  .banner {
+    background: #16321f;
+    border: 1px solid #2e7d4f;
+    color: #a8f0c0;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
+  .demo-banner {
+    background: #3b2f16;
+    border: 1px solid #c98f2e;
+    color: #ffd98a;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
+  .section {
+    background: #1c1e26;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .user-info div { margin: 4px 0; font-size: 0.95rem; color: #cfd3dc; }
+  .user-info b { color: #f5f5f5; }
+  .overview { font-style: italic; color: #d5d8de; margin-bottom: 10px; }
+  .safety { font-size: 0.85rem; color: #ffb4b4; margin-bottom: 4px; }
+  .day {
+    border-top: 1px solid #2b2e38;
+    padding: 14px 0;
+  }
+  .day:first-of-type { border-top: none; }
+  .day h3 { margin: 0 0 6px; color: #ff8459; }
+  .day .focus { color: #9aa0ab; font-size: 0.85rem; margin-bottom: 8px; }
+  .day p { margin: 6px 0; font-size: 0.9rem; }
+  ul.exercises { margin: 6px 0 0; padding-left: 18px; }
+  ul.exercises li { margin-bottom: 8px; font-size: 0.9rem; }
+  ul.exercises b { color: #f5f5f5; }
+  .exercises small { color: #9aa0ab; display: block; }
+  .tip-box { font-size: 0.95rem; }
+  .tip-box .recovery { color: #9aa0ab; font-size: 0.85rem; margin-top: 6px; }
+  form.feedback textarea {
+    width: 100%;
+    min-height: 90px;
+    border-radius: 8px;
+    border: 1px solid #3a3f4b;
+    background: #1b1d24;
+    color: #f5f5f5;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  form.feedback input[type="hidden"] {}
+  form.feedback button {
+    margin-top: 10px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #4c6ef5;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  form.feedback button:hover { background: #6a86ff; }
+  a.home-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #9aa0ab;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  a.home-link:hover { color: #ff6a3d; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🏆 Your Personalized Workout Plan</h1>
+
+    {% if message %}
+      <div class="banner">✅ {{ message }}</div>
+    {% endif %}
+
+    {% if demo_mode %}
+      <div class="demo-banner">⚠️ Gemini couldn't be reached, so this is a placeholder plan. Try again shortly.</div>
+    {% endif %}
+
+    <div class="section user-info">
+      <div><b>Name:</b> {{ user.name }}</div>
+      <div><b>User ID:</b> {{ user.user_id }}</div>
+      <div><b>Age:</b> {{ user.age }}</div>
+      <div><b>Weight:</b> {{ user.weight_kg }} kg</div>
+      <div><b>Goal:</b> {{ user.goal }}</div>
+      <div><b>Intensity:</b> {{ user.intensity }}</div>
+    </div>
+
+    <div class="section">
+      <p class="overview">{{ plan.overview }}</p>
+      <p class="safety">⚠️ {{ plan.safety_note }}</p>
+
+      {% for day in plan.days %}
+      <div class="day">
+        <h3>{{ day.day }}</h3>
+        <div class="focus">Focus: {{ day.focus }}</div>
+        <p><b>Warm-up:</b> {{ day.warm_up }}</p>
+        <ul class="exercises">
+          {% for ex in day.exercises %}
+          <li>
+            <b>{{ ex.name }}</b> — {{ ex.sets_or_duration }} (rest: {{ ex.rest }})
+            <small>{{ ex.notes }}</small>
+          </li>
+          {% endfor %}
+        </ul>
+        <p><b>Cooldown:</b> {{ day.cooldown }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="section tip-box">
+      <h3>🥗 Nutrition / Recovery Tip</h3>
+      <p>{{ nutrition_tip.tip }}</p>
+      <p class="recovery">{{ nutrition_tip.recovery_note }}</p>
+    </div>
+
+    <div class="section">
+      <h3>📝 Share Your Feedback</h3>
+      <form class="feedback" method="post" action="/submit-feedback">
+        <input type="hidden" name="user_id" value="{{ user.user_id }}" />
+        <label for="feedback">Your Feedback</label>
+        <textarea id="feedback" name="feedback" minlength="3" maxlength="2000"
+          placeholder="e.g. more focus on cardio, include more rest days..." required></textarea>
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </div>
+
+    <a class="home-link" href="/">← Generate a new plan</a>
+  </div>
+</body>
+</html>
